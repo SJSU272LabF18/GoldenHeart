@@ -13,6 +13,10 @@
 
 #### GoldenHeart project
 
+I am changing your project as below:
+Develop an app for charities, where they can register and add their info/metadata with their web url and mission and goals. Then you develop web services on these data for any companies to use which want to embed the list of charities on their product page. when they sell a product or service they can allow their customers to choose a charity for certain percentage of the revenue to be donated. talk to me on wednesday. 
+
+
 What if everyone took one positive action, big or small?  Golden Heart Project creates a community of people making the world more awesome by creating or accepting inspiring challenges that impact hundreds of causes. From the environment to human rights. GoldenHeart project enables 2 categories of Samaritans. First, people who desire to contribute to a social cause but lack time or are unable to do it. Second, people who have time and can do something for a cause but lack funds. GoldenHeart Project will enable the first group to create a Challenge and assign some money to it. Individuals from the Second group can search through a myriad of challenges, Pick one, Complete it and the amount associated with the challenge goes to the desired cause. This makes taking positive action and tracking your impact easy. In this way, the Golden Heart Project effectively helps to raise money as well as take effective actions for a cause.
 
 ### Project Proposal 2
