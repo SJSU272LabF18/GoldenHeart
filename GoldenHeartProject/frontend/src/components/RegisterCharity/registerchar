@@ -1,0 +1,1741 @@
+import React, { Component } from "react";
+import "./RegisterCharity.css";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import cookie from "react-cookies";
+import { Redirect } from "react-router";
+import { connect } from "react-redux";
+import HeaderMain from "../Header/HeaderMain";
+
+import "./RegisterCharity.css";
+class RegisterCharity extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      username: window.localStorage.getItem("owner"),
+      country: "",
+      street: "",
+      building: "",
+      city: "",
+      state: "",
+      zipcode: "",
+      headline: "",
+      description: "",
+      propertytype: "",
+      bedrooms: "",
+      accomodates: "",
+      bathrooms: "",
+      startdate: "",
+      enddate: "",
+      currency: "",
+      rate: "",
+      stay: "",
+      imagedescription: "",
+      images: [],
+      imageView: [],
+      dbnames: [],
+      WelcomeFlag: true,
+      LocationFlag: false,
+      DetailsFlag: false,
+      PhotosFlag: false,
+      PricingFlag: false
+    };
+
+    this.onChange = this.onChange.bind(this);
+  }
+
+  onChange = e => this.setState({ [e.target.name]: e.target.value });
+
+  onImageChange = e => {
+    console.log("Inside on image change ", e.target.files);
+
+    this.setState({
+      images: e.target.files
+    });
+  };
+
+  onSubmit = e => {
+    e.preventDefault();
+
+    let formData = new FormData();
+    const files = this.state.images;
+
+    for (var index = 0; index < files.length; index++) {
+      formData.append("files", files[index]);
+    }
+
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data"
+      }
+    };
+
+    axios
+      .post("http://localhost:5000/upload", formData, config)
+      .then(response => {
+        if (response.status == 200) console.log("Uploaded successfully");
+        window.alert("Upload successful");
+      });
+
+    this.handleGetPhoto();
+  };
+
+  //get photo
+
+  handleGetPhoto = e => {
+    console.log("IMAGES in this state", this.state.images);
+
+    var fileNames = [];
+    for (var index = 0; index < this.state.images.length; index++) {
+      fileNames[index] = this.state.images[index].name;
+    }
+
+    console.log("file name array first element", fileNames[0]);
+    console.log("State image array first element", this.state.images[0].name);
+
+    axios.post("http://localhost:5000/download/" + fileNames).then(response => {
+      let imagePreview = [];
+      for (var index = 0; index < response.data.length; index++) {
+        imagePreview[index] = "data:image/jpg;base64, " + response.data[index];
+      }
+
+      this.setState({
+        imageView: imagePreview
+      });
+
+      console.log("Retrieved images:", this.state.imageView);
+    });
+  };
+
+  //get photo ends
+
+  handleWelcomeFlag = () => {
+    this.setState({
+      WelcomeFlag: true,
+      LocationFlag: false,
+      DetailsFlag: false,
+      PhotosFlag: false,
+      PricingFlag: false
+    });
+  };
+
+  handleLocationFlag = () => {
+    this.setState({
+      WelcomeFlag: false,
+      LocationFlag: true,
+      DetailsFlag: false,
+      PhotosFlag: false,
+      PricingFlag: false
+    });
+  };
+
+  handleDetailsFlag = () => {
+    this.setState({
+      WelcomeFlag: false,
+      LocationFlag: false,
+      DetailsFlag: true,
+      PhotosFlag: false,
+      PricingFlag: false
+    });
+  };
+
+  handlePhotosFlag = () => {
+    this.setState({
+      WelcomeFlag: false,
+      LocationFlag: false,
+      DetailsFlag: false,
+      PhotosFlag: true,
+      PricingFlag: false
+    });
+  };
+
+  handlePricingFlag = () => {
+    this.setState({
+      WelcomeFlag: false,
+      LocationFlag: false,
+      DetailsFlag: false,
+      PhotosFlag: false,
+      PricingFlag: true
+    });
+  };
+
+  handleProperty = e => {
+    e.preventDefault();
+
+    console.log("handleProperty images ", this.state.images);
+    console.log("handleProperty images ", this.state.images[0].name);
+
+    // var imagenames = "";
+    // var str2 = "";
+    // var str = "";
+    // for (var index = 0; index < this.state.images.length; index++) {
+    //   // if (this.state.images.length < 2) {
+    //   //   var str2 = imagenames.concat(this.state.images[index].name);
+    //   //   console.log("str2", str2);
+    //   // } else {
+    //   str = str + str.concat(this.state.images[index].name);
+    //   str2 = str.concat(",");
+    //   str = str2;
+    //   console.log("str2", str2);
+    //   // }
+    // }
+
+    var fileNames = [];
+    for (var index = 0; index < this.state.images.length; index++) {
+      fileNames[index] = this.state.images[index].name;
+    }
+    var str2 = "";
+    str2 = fileNames.toString();
+
+    const data = {
+      username: this.state.username,
+      country: this.state.country,
+      street: this.state.street,
+      building: this.state.building,
+      city: this.state.city,
+      state: this.state.state,
+      zipcode: this.state.zipcode,
+      headline: this.state.headline,
+      description: this.state.description,
+      propertytype: this.state.propertytype,
+      bedrooms: this.state.bedrooms,
+      accomodates: this.state.accomodates,
+      bathrooms: this.state.bathrooms,
+      startdate: this.state.startdate,
+      enddate: this.state.enddate,
+      currency: this.state.currency,
+      rate: this.state.rate,
+      stay: this.state.stay,
+      images: str2
+    };
+
+    axios.defaults.withCredentials = true;
+
+    this.props.listProperty(data);
+  };
+
+  render() {
+    console.log("REDUX PROPS DATA: ", this.props.data);
+    console.log("FLAG : ", this.props.listed);
+
+    // if (this.props.listed) {
+    //   console.log("Listed successfully");
+    //   window.alert("Property Listed Successfuly");
+    //   <Redirect to="/homeownerredux" />;
+    // }
+    const { imagedescription, selectedFile } = this.state;
+    console.log(window.localStorage.getItem("username"));
+
+    let redirectVar = null;
+    if (this.state.propertyPosted) {
+      window.alert("Property posted successfully!");
+      redirectVar = <Redirect to="/homeownerredux" />;
+    }
+
+    if (this.state.WelcomeFlag) {
+      return (
+        <div className="div">
+          {/* {cookieCheck} */}
+          {redirectVar}
+          <HeaderMain />
+
+          <div className="sidebar">
+            <a href="#" onClick={this.handleWelcomeFlag}>
+              <span>
+                {" "}
+                <i class="fa fa-angle-right" aria-hidden="true" />
+              </span>{" "}
+              Welcome
+            </a>
+            <a href="#" onClick={this.handleLocationFlag}>
+              Location
+            </a>
+            <a href="#" onClick={this.handleDetailsFlag}>
+              Details
+            </a>
+            <a href="#">Booking Options</a>
+            <a href="#" onClick={this.handlePhotosFlag}>
+              Photos
+            </a>
+            <a href="#">Security</a>
+            <a href="#">Payment</a>
+            <a href="#" onClick={this.handlePricingFlag}>
+              Pricing
+            </a>
+          </div>
+
+          <div className="mainform shadow">
+            {" "}
+            <h5 className="welcometext">
+              <span className="textleft">
+                {" "}
+                Welcome! Verify the location of your rental{" "}
+              </span>
+            </h5>
+            <p class="lead">Just 4 steps remaining </p>
+            <span>
+              {" "}
+              <a
+                className="btn btn-primary btn-md mb-3"
+                href="#"
+                onClick={this.handleLocationFlag}
+              >
+                Continue
+              </a>
+            </span>
+          </div>
+        </div>
+      );
+    } else if (this.state.LocationFlag) {
+      return (
+        <div className="div">
+          {/* {localStorage.getItem("user") ? <NavbarMain /> : <NavbarMainOwner />} */}
+          <HeaderMain />
+          <div className="sidebar">
+            <a href="#" onClick={this.handleWelcomeFlag}>
+              Welcome
+            </a>
+            <a href="#" onClick={this.handleLocationFlag}>
+              Location
+            </a>
+            <a href="#" onClick={this.handleDetailsFlag}>
+              Details
+            </a>
+            <a href="#">Booking Options</a>
+            <a href="#" onClick={this.handlePhotosFlag}>
+              Photos
+            </a>
+            <a href="#">Security</a>
+            <a href="#">Payment</a>
+            <a href="#" onClick={this.handlePricingFlag}>
+              Pricing
+            </a>
+          </div>
+
+          <div className="mainform">
+            <form>
+              <div className="m-5">
+                <p class="lead">Please enter the location details : </p>
+              </div>
+
+              <div className="form-group box-width m-5">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="country"
+                  placeholder="Country"
+                  onChange={this.onChange}
+                  name="country"
+                />
+              </div>
+
+              <div className="form-group box-width m-5">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="street"
+                  placeholder="Street Address"
+                  onChange={this.onChange}
+                  name="street"
+                />
+              </div>
+
+              <div className="form-group box-width m-5">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="building"
+                  placeholder="Unit, Suite, Building, Etc. "
+                  onChange={this.onChange}
+                  name="building"
+                />
+              </div>
+
+              <div className="form-group box-width m-5">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="city"
+                  placeholder="City"
+                  onChange={this.onChange}
+                  name="city"
+                />
+              </div>
+
+              <div className="form-group box-width m-5">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="state"
+                  placeholder="State"
+                  onChange={this.onChange}
+                  name="state"
+                />
+              </div>
+
+              <div className="form-group box-width m-5">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="zipcode"
+                  placeholder="Zip Code"
+                  onChange={this.onChange}
+                  name="zipcode"
+                />
+              </div>
+              <span className="prev-next">
+                {" "}
+                <a
+                  className="btn btn-primary btn-md mb-3 "
+                  href="#"
+                  onClick={this.handleWelcomeFlag}
+                >
+                  Previous
+                </a>
+              </span>
+              <span className="prev-next">
+                {" "}
+                <a
+                  className="btn btn-primary btn-md mb-3 "
+                  href="#"
+                  onClick={this.handleDetailsFlag}
+                >
+                  Next
+                </a>
+              </span>
+              <br />
+              <hr />
+            </form>
+          </div>
+        </div>
+      );
+    } else if (this.state.DetailsFlag) {
+      return (
+        <div className="div">
+          <HeaderMain />
+          <div className="sidebar">
+            <a href="#" onClick={this.handleWelcomeFlag}>
+              Welcome
+            </a>
+            <a href="#" onClick={this.handleLocationFlag}>
+              Location
+            </a>
+            <a href="#" onClick={this.handleDetailsFlag}>
+              Details
+            </a>
+            <a href="#">Booking Options</a>
+            <a href="#" onClick={this.handlePhotosFlag}>
+              Photos
+            </a>
+            <a href="#">Security</a>
+            <a href="#">Payment</a>
+            <a href="#" onClick={this.handlePricingFlag}>
+              Pricing
+            </a>
+          </div>
+
+          <div className="mainform">
+            <form>
+              <div className="m-5">
+                <p class="lead">Please enter the property details : </p>
+              </div>
+
+              <div className="form-group box-width m-5">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="headline"
+                  placeholder="Headline / Title"
+                  onChange={this.onChange}
+                  name="headline"
+                />
+              </div>
+              <div className="form-group">
+                <textarea
+                  className="form-control box-width m-5 input-sm"
+                  rows="6"
+                  cols="20"
+                  name="description"
+                  id="description"
+                  onChange={this.onChange}
+                  placeholder="Property description...."
+                  maxLength="600"
+                />
+              </div>
+
+              <p className="textalign">Property type:</p>
+
+              <div className="form-group mt-4 ml-5">
+                <select
+                  name="propertytype"
+                  className="form-control btn-sm box-width"
+                  onChange={this.onChange}
+                  id="propertytype"
+                >
+                  <option disabled value>
+                    Select type of property
+                  </option>
+
+                  <option value="apartment">Apartment</option>
+                  <option value="barn">Barn</option>
+                  <option value="bed &amp; breakfast">
+                    Bed &amp; Breakfast
+                  </option>
+                  <option value="boat">Boat</option>
+                  <option value="bungalow">Bungalow</option>
+                  <option value="cabin">Cabin</option>
+                  <option value="campground">Campground</option>
+                  <option value="castle">Castle</option>
+                  <option value="chalet">Chalet</option>
+                  <option value="country house / chateau">
+                    Chateau / Country House
+                  </option>
+                  <option value="condo">Condo</option>
+                  <option value="corporate apartment">
+                    Corporate Apartment
+                  </option>
+                  <option value="cottage">Cottage</option>
+                  <option value="estate">Estate</option>
+                  <option value="farmhouse">Farmhouse</option>
+                  <option value="guest house/pension">Guest House</option>
+                  <option value="hostel">Hostel</option>
+                  <option value="hotel">Hotel</option>
+                  <option value="hotel suites">Hotel Suites</option>
+                  <option selected="" value="house">
+                    House
+                  </option>
+                  <option value="house boat">House Boat</option>
+                  <option value="lodge">Lodge</option>
+                  <option value="Mill">Mill</option>
+                  <option value="mobile home">Mobile Home</option>
+                  <option value="Recreational Vehicle">
+                    Recreational Vehicle
+                  </option>
+                  <option value="resort">Resort</option>
+                  <option value="studio">Studio</option>
+                  <option value="Tower">Tower</option>
+                  <option value="townhome">Townhome</option>
+                  <option value="villa">Villa</option>
+                  <option value="yacht">Yacht</option>
+                </select>
+              </div>
+
+              <p className="textalign">Bedrooms:</p>
+
+              <div class="form-group mt-4 ml-5">
+                <select
+                  className="form-control btn-sm box-width"
+                  onChange={this.onChange}
+                  id="bedrooms"
+                  name="bedrooms"
+                >
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </div>
+
+              <p className="textalign">Accomodates:</p>
+              <div class="form-group mt-4 ml-5">
+                <select
+                  className="form-control btn-sm box-width"
+                  onChange={this.onChange}
+                  id="accomodates"
+                  name="accomodates"
+                >
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </div>
+
+              <div class="form-group mt-4 ml-5">
+                <p className="textalign">Bathrooms:</p>
+                <select
+                  className="form-control btn-sm box-width"
+                  onChange={this.onChange}
+                  id="bathrooms"
+                  name="bathrooms"
+                >
+                  <option value="1">1</option>
+                  <option value="1.5">1.5</option>
+                  <option value="2">2</option>
+                  <option value="2.5">2.5</option>
+                  <option value="3">3</option>
+                  <option value="3.5">3.5</option>
+                  <option value="4">4</option>
+                  <option value="4.5">4.5</option>
+                  <option value="5">5</option>
+                </select>
+              </div>
+
+              <span className="prev-next">
+                {" "}
+                <a
+                  className="btn btn-primary btn-md mb-3 "
+                  href="#"
+                  onClick={this.handleLocationFlag}
+                >
+                  Previous
+                </a>
+              </span>
+              <span className="prev-next">
+                {" "}
+                <a
+                  className="btn btn-primary btn-md mb-3 "
+                  href="#"
+                  onClick={this.handlePhotosFlag}
+                >
+                  Next
+                </a>
+              </span>
+              <br />
+              <hr />
+            </form>
+          </div>
+        </div>
+      );
+    } else if (this.state.PhotosFlag) {
+      return (
+        <div className="div">
+          <HeaderMain />
+
+          <div className="sidebar">
+            <a href="#" onClick={this.handleWelcomeFlag}>
+              Welcome
+            </a>
+            <a href="#" onClick={this.handleLocationFlag}>
+              Location
+            </a>
+            <a href="#" onClick={this.handleDetailsFlag}>
+              Details
+            </a>
+            <a href="#">Booking Options</a>
+            <a href="#" onClick={this.handlePhotosFlag}>
+              Photos
+            </a>
+            <a href="#">Security</a>
+            <a href="#">Payment</a>
+            <a href="#" onClick={this.handlePricingFlag}>
+              Pricing
+            </a>
+          </div>
+
+          <div className="mainform">
+            {" "}
+            <p class="lead phototext">Add photos of your property : </p>
+            <p>Showcase your property’s best features. </p>
+            <p>
+              <h6>
+                {" "}
+                Requirements: JPEG, less than 1MB file size, minimum 2 and 5
+                photos maximum.{" "}
+              </h6>
+            </p>
+            {/* IMAGE UPLOAD start */}
+            <div>
+              <form onSubmit={this.onSubmit} encType="multipart/form-data">
+                <input
+                  type="file"
+                  name="selectedFile"
+                  multiple
+                  onChange={this.onImageChange}
+                />
+                <button
+                  className="btn btn-primary"
+                  style={{ "margin-bottom": "1%" }}
+                  type="submit"
+                >
+                  Upload
+                </button>
+                <br />
+              </form>
+
+              <div>
+                <img
+                  src={this.state.imageView[0]}
+                  style={{ height: "100px", width: "100px" }}
+                />
+                <img
+                  src={this.state.imageView[1]}
+                  style={{ height: "100px", width: "100px" }}
+                />
+                <img
+                  src={this.state.imageView[2]}
+                  style={{ height: "100px", width: "100px" }}
+                />
+                <img
+                  src={this.state.imageView[3]}
+                  style={{ height: "100px", width: "100px" }}
+                />
+                <img
+                  src={this.state.imageView[4]}
+                  style={{ height: "100px", width: "100px" }}
+                />
+              </div>
+            </div>
+            {/* IMAGE UPLOAD end */}
+            <br />
+            <span className="prev-next">
+              {" "}
+              <a
+                className="btn btn-primary btn-md mb-3 "
+                href="#"
+                onClick={this.handleDetailsFlag}
+              >
+                Previous
+              </a>
+            </span>
+            <span className="prev-next">
+              {" "}
+              <a
+                className="btn btn-primary btn-md mb-3 "
+                href="#"
+                onClick={this.handlePricingFlag}
+              >
+                Next
+              </a>
+            </span>
+            <br />
+            <hr />
+          </div>
+        </div>
+      );
+    } else if (this.state.PricingFlag) {
+      return (
+        <div className="div">
+          <HeaderMain />
+
+          <div className="sidebar">
+            <a href="#" onClick={this.handleWelcomeFlag}>
+              Welcome
+            </a>
+            <a href="#" onClick={this.handleLocationFlag}>
+              Location
+            </a>
+            <a href="#" onClick={this.handleDetailsFlag}>
+              Details
+            </a>
+            <a href="#">Booking Options</a>
+            <a href="#" onClick={this.handlePhotosFlag}>
+              Photos
+            </a>
+            <a href="#">Security</a>
+            <a href="#">Payment</a>
+            <a href="#" onClick={this.handlePricingFlag}>
+              Pricing
+            </a>
+          </div>
+
+          <div className="mainform">
+            <form>
+              <div className="m-5">
+                <p class="lead toptextmargin">
+                  Please select the property availability dates :{" "}
+                </p>
+              </div>
+
+              <div class="input-group box-width m-5 ">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">Start:</div>
+                </div>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="startdate"
+                  name="startdate"
+                  placeholder="Start Date"
+                  onChange={this.onChange}
+                />
+              </div>
+
+              <div class="input-group box-width m-5 ">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">End:</div>
+                </div>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="enddate"
+                  name="enddate"
+                  onChange={this.onChange}
+                  placeholder="End Date"
+                />
+              </div>
+
+              <div className="m-5">
+                <p class="lead">Please enter the pricing details : </p>
+              </div>
+
+              <div className="form-group box-width m-5">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="currency"
+                  placeholder="Currency"
+                  onChange={this.onChange}
+                  name="currency"
+                />
+              </div>
+
+              <div className="form-group box-width m-5">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="rate"
+                  placeholder="Nightly Base Rate"
+                  onChange={this.onChange}
+                  name="rate"
+                />
+              </div>
+
+              <div className="form-group box-width m-5">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="stay"
+                  placeholder="Minimum stay "
+                  onChange={this.onChange}
+                  name="stay"
+                />
+              </div>
+
+              <span className="left-previous">
+                {" "}
+                <a
+                  className="btn btn-primary btn-md mb-3 "
+                  href="#"
+                  onClick={this.handlePhotosFlag}
+                >
+                  Previous
+                </a>
+              </span>
+              <br />
+              <hr />
+              <div className="ml-10">
+                <button
+                  type="submit"
+                  className="btn btn-primary btn-md mb-3"
+                  onClick={this.handleProperty}
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      );
+    }
+  }
+}
+
+export default RegisterCharity;
+// const mapStateToProps = state => {
+//   console.log("Inside list property map state to props: ", state);
+
+//   return {
+//     data: state.reducer.data,
+//     listed: state.reducer.listed
+//   };
+// };
+
+// const mapDispatchStateToProps = dispatch => {
+//   console.log("Inside list property map dispatch to props");
+//   return {
+//     listProperty: data => {
+//       axios.post("http://localhost:5000/listproperty", data).then(response => {
+//         console.log(response.data);
+//         window.alert("Property posted successfully");
+//         dispatch({
+//           type: "LIST_PROPERTY",
+//           payload: response.data
+//         });
+//       });
+
+//       console.log("List property Action dispatched");
+//     }
+//   };
+// };
+
+// export default connect(
+//   mapStateToProps,
+//   mapDispatchStateToProps
+// )(PropertyNewRedux);
+
+
+SAKET
+
+
+
+import React, { Component } from "react";
+// import "./RegisterCharity.css";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import cookie from "react-cookies";
+import { Redirect } from "react-router";
+import { connect } from "react-redux";
+import HeaderMain from "../Header/HeaderMain";
+import "./charity.css";
+// import "./RegisterCharity.css";
+class RegisterCharity extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      username: window.localStorage.getItem("owner"),
+      country: "",
+      street: "",
+      building: "",
+      city: "",
+      state: "",
+      zipcode: "",
+      headline: "",
+      description: "",
+      propertytype: "",
+      bedrooms: "",
+      accomodates: "",
+      bathrooms: "",
+      startdate: "",
+      enddate: "",
+      currency: "",
+      rate: "",
+      stay: "",
+      imagedescription: "",
+      images: [],
+      imageView: [],
+      dbnames: [],
+      WelcomeFlag: true,
+      LocationFlag: false,
+      DetailsFlag: false,
+      PhotosFlag: false,
+      PricingFlag: false
+    };
+
+    this.onChange = this.onChange.bind(this);
+  }
+
+  onChange = e => this.setState({ [e.target.name]: e.target.value });
+
+  onImageChange = e => {
+    console.log("Inside on image change ", e.target.files);
+
+    this.setState({
+      images: e.target.files
+    });
+  };
+
+  onSubmit = e => {
+    e.preventDefault();
+
+    let formData = new FormData();
+    const files = this.state.images;
+
+    for (var index = 0; index < files.length; index++) {
+      formData.append("files", files[index]);
+    }
+
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data"
+      }
+    };
+
+    axios
+      .post("http://localhost:5000/upload", formData, config)
+      .then(response => {
+        if (response.status == 200) console.log("Uploaded successfully");
+        window.alert("Upload successful");
+      });
+
+    this.handleGetPhoto();
+  };
+
+  //get photo
+
+  handleGetPhoto = e => {
+    console.log("IMAGES in this state", this.state.images);
+
+    var fileNames = [];
+    for (var index = 0; index < this.state.images.length; index++) {
+      fileNames[index] = this.state.images[index].name;
+    }
+
+    console.log("file name array first element", fileNames[0]);
+    console.log("State image array first element", this.state.images[0].name);
+
+    axios.post("http://localhost:5000/download/" + fileNames).then(response => {
+      let imagePreview = [];
+      for (var index = 0; index < response.data.length; index++) {
+        imagePreview[index] = "data:image/jpg;base64, " + response.data[index];
+      }
+
+      this.setState({
+        imageView: imagePreview
+      });
+
+      console.log("Retrieved images:", this.state.imageView);
+    });
+  };
+
+  //get photo ends
+
+  handleWelcomeFlag = () => {
+    this.setState({
+      WelcomeFlag: true,
+      LocationFlag: false,
+      DetailsFlag: false,
+      PhotosFlag: false,
+      PricingFlag: false
+    });
+  };
+
+  handleLocationFlag = () => {
+    this.setState({
+      WelcomeFlag: false,
+      LocationFlag: true,
+      DetailsFlag: false,
+      PhotosFlag: false,
+      PricingFlag: false
+    });
+  };
+
+  handleDetailsFlag = () => {
+    this.setState({
+      WelcomeFlag: false,
+      LocationFlag: false,
+      DetailsFlag: true,
+      PhotosFlag: false,
+      PricingFlag: false
+    });
+  };
+
+  handlePhotosFlag = () => {
+    this.setState({
+      WelcomeFlag: false,
+      LocationFlag: false,
+      DetailsFlag: false,
+      PhotosFlag: true,
+      PricingFlag: false
+    });
+  };
+
+  handlePricingFlag = () => {
+    this.setState({
+      WelcomeFlag: false,
+      LocationFlag: false,
+      DetailsFlag: false,
+      PhotosFlag: false,
+      PricingFlag: true
+    });
+  };
+
+  handleProperty = e => {
+    e.preventDefault();
+
+    console.log("handleProperty images ", this.state.images);
+    console.log("handleProperty images ", this.state.images[0].name);
+
+    // var imagenames = "";
+    // var str2 = "";
+    // var str = "";
+    // for (var index = 0; index < this.state.images.length; index++) {
+    //   // if (this.state.images.length < 2) {
+    //   //   var str2 = imagenames.concat(this.state.images[index].name);
+    //   //   console.log("str2", str2);
+    //   // } else {
+    //   str = str + str.concat(this.state.images[index].name);
+    //   str2 = str.concat(",");
+    //   str = str2;
+    //   console.log("str2", str2);
+    //   // }
+    // }
+
+    var fileNames = [];
+    for (var index = 0; index < this.state.images.length; index++) {
+      fileNames[index] = this.state.images[index].name;
+    }
+    var str2 = "";
+    str2 = fileNames.toString();
+
+    const data = {
+      username: this.state.username,
+      country: this.state.country,
+      street: this.state.street,
+      building: this.state.building,
+      city: this.state.city,
+      state: this.state.state,
+      zipcode: this.state.zipcode,
+      headline: this.state.headline,
+      description: this.state.description,
+      propertytype: this.state.propertytype,
+      bedrooms: this.state.bedrooms,
+      accomodates: this.state.accomodates,
+      bathrooms: this.state.bathrooms,
+      startdate: this.state.startdate,
+      enddate: this.state.enddate,
+      currency: this.state.currency,
+      rate: this.state.rate,
+      stay: this.state.stay,
+      images: str2
+    };
+
+    axios.defaults.withCredentials = true;
+
+    this.props.listProperty(data);
+  };
+
+  render() {
+    console.log("REDUX PROPS DATA: ", this.props.data);
+    console.log("FLAG : ", this.props.listed);
+
+    // if (this.props.listed) {
+    //   console.log("Listed successfully");
+    //   window.alert("Property Listed Successfuly");
+    //   <Redirect to="/homeownerredux" />;
+    // }
+    const { imagedescription, selectedFile } = this.state;
+    console.log(window.localStorage.getItem("username"));
+
+    let redirectVar = null;
+    if (this.state.propertyPosted) {
+      window.alert("Property posted successfully!");
+      redirectVar = <Redirect to="/homeownerredux" />;
+    }
+
+    if (this.state.WelcomeFlag) {
+      return (
+        <div className="div">
+          {/* {cookieCheck} */}
+          {redirectVar}
+          <HeaderMain />
+
+          <div className="sidebar">
+            <a href="#" onClick={this.handleWelcomeFlag}>
+              <span>
+                {" "}
+                <i class="fa fa-angle-right" aria-hidden="true" />
+              </span>{" "}
+              Welcome
+            </a>
+            <a href="#" onClick={this.handleLocationFlag}>
+              Location
+            </a>
+            <a href="#" onClick={this.handleDetailsFlag}>
+              Details
+            </a>
+            <a href="#">Booking Options</a>
+            <a href="#" onClick={this.handlePhotosFlag}>
+              Photos
+            </a>
+            <a href="#">Security</a>
+            <a href="#">Payment</a>
+            <a href="#" onClick={this.handlePricingFlag}>
+              Pricing
+            </a>
+          </div>
+
+          <div className="mainform shadow">
+            {" "}
+            <h5 className="welcometext">
+              <span className="textleft">
+                {" "}
+                Welcome! Verify the location of your rental{" "}
+              </span>
+            </h5>
+            <p class="lead">Just 4 steps remaining </p>
+            <span>
+              {" "}
+              <a
+                className="btn btn-primary btn-md mb-3"
+                href="#"
+                onClick={this.handleLocationFlag}
+              >
+                Continue
+              </a>
+            </span>
+          </div>
+        </div>
+      );
+    } else if (this.state.LocationFlag) {
+      return (
+        <div className="div">
+          {/* {localStorage.getItem("user") ? <NavbarMain /> : <NavbarMainOwner />} */}
+          <HeaderMain />
+
+          <div className="container add-property-body">
+            <div className="add-property-wrapper">
+              <div className="row progress-row">
+                <div className="col-lg-12">
+                  <span>Progress</span>
+                  <div class="progress  custom-progress-bar">
+                    <div
+                      className={"progress-bar w-" + this.state.percentComplete}
+                      role="progressbar"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="row add-property-rows">
+                <div className="col-3">
+                  <div
+                    class="nav flex-column nav-pills"
+                    id="v-pills-tab"
+                    role="tablist"
+                    aria-orientation="vertical"
+                  >
+                    <a class="nav-link" role="tab">
+                      Welcome
+                    </a>
+                    <a
+                      class="nav-link"
+                      id="v-pills-location-tab"
+                      data-toggle="pill"
+                      href="#v-pills-location"
+                      role="tab"
+                    >
+                      Location
+                    </a>
+                    <a
+                      class="nav-link"
+                      id="v-pills-details-tab"
+                      data-toggle="pill"
+                      href="#v-pills-details"
+                      role="tab"
+                    >
+                      Details
+                    </a>
+                    <a class="nav-link no-cursor" href="#ignore" role="tab">
+                      Booking options
+                    </a>
+                    <a
+                      class="nav-link"
+                      id="v-pills-photos-tab"
+                      data-toggle="pill"
+                      href="#v-pills-photos"
+                      role="tab"
+                    >
+                      Photos
+                    </a>
+                    <a class="nav-link no-cursor" href="#ignore" role="tab">
+                      Security
+                    </a>
+                    <a class="nav-link no-cursor" href="#ignore" role="tab">
+                      Payments
+                    </a>
+                    <a
+                      class="nav-link"
+                      id="v-pills-pricing-tab"
+                      data-toggle="pill"
+                      href="#v-pills-availability"
+                      role="tab"
+                    >
+                      Availability
+                    </a>
+                    <a
+                      class="nav-link"
+                      id="v-pills-pricing-tab"
+                      data-toggle="pill"
+                      href="#v-pills-pricing"
+                      role="tab"
+                    >
+                      Pricing
+                    </a>
+                  </div>
+                </div>
+                <div className="col-8">
+                  <div class="tab-content" id="v-pills-tabContent">
+                    <div
+                      class="tab-pane fade show active"
+                      id="v-pills-welcome"
+                      role="tabpanel"
+                    >
+                      <h2>
+                        <strong>
+                          Welcome! Verify the<br />location of your rental
+                        </strong>
+                      </h2>
+                      <h6>Just 5 steps remaining.</h6>
+                    </div>
+                    {/* Location Block */}
+                    <div
+                      class="tab-pane fade"
+                      id="v-pills-location"
+                      role="tabpanel"
+                    >
+                      <div className="list-property-content-contianer">
+                        <div className="list-property-content-contianer-wrapper">
+                          <div class="list-property-content-contianer-header">
+                            <h3>
+                              <span className="list-property-content-container-header-title">
+                                <strong>
+                                  Verify the location of your rental
+                                </strong>
+                              </span>
+                            </h3>
+                            <hr />
+                          </div>
+                          <div className="list-property-content-contianer-body">
+                            <div class="address">
+                              <div class="list-property-content-contianer-body-title">
+                                <span>Address:</span>
+                              </div>
+                              <div>
+                                <div className="input-group list-property-content-input-group">
+                                  <input
+                                    className="list-property-content-input-text-box form-control"
+                                    type="text"
+                                    placeholder="eg. Morrison Dr, San Jose"
+                                    name="address"
+                                    value={this.state.address || ""}
+                                    onChange={this.handleInputChange}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            <hr />
+                          </div>
+                          <div className="list-property-content-contianer-footer">
+                            <div class="row">
+                              <div class="col-6">
+                                {/* <button class="btn btn-default list-property-content-contianer-footer-button" label="Back"><span class="list-property-content-contianer-footer-button-text">Back</span></button> */}
+                              </div>
+                              <div class="col-6">
+                                <button
+                                  class="btn btn-default list-property-content-contianer-footer-button"
+                                  label="Next"
+                                >
+                                  <span class="list-property-content-contianer-footer-button-text">
+                                    Next
+                                  </span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Details Block */}
+                    <div
+                      class="tab-pane fade"
+                      id="v-pills-details"
+                      role="tabpanel"
+                    >
+                      <div className="list-property-content-contianer">
+                        <div className="list-property-content-contianer-wrapper">
+                          <div class="list-property-content-contianer-header">
+                            <h3>
+                              <span className="list-property-content-container-header-title">
+                                <strong>Describe your property</strong>
+                              </span>
+                            </h3>
+                            <hr />
+                          </div>
+                          <div className="list-property-content-contianer-body">
+                            <div>
+                              <div class="list-property-content-contianer-body-title-description">
+                                <span>
+                                  Start out with a descriptive headline and a
+                                  detailed summary of your property.
+                                </span>
+                              </div>
+                              <div>
+                                <div className="input-group list-property-content-input-group">
+                                  <input
+                                    className="list-property-content-input-text-box form-control"
+                                    type="text"
+                                    placeholder="Headline"
+                                    name="describeHeadline"
+                                    value={this.state.describeHeadline || ""}
+                                    onChange={this.handleInputChange}
+                                  />
+                                </div>
+                                <div className="input-group list-property-content-input-group">
+                                  <input
+                                    className="list-property-content-input-text-box form-control"
+                                    type="text"
+                                    placeholder="Description"
+                                    name="describeDescription"
+                                    value={this.state.describeDescription || ""}
+                                    onChange={this.handleInputChange}
+                                  />
+                                </div>
+                                <div className="input-group list-property-content-input-group">
+                                  <input
+                                    className="list-property-content-input-text-box form-control"
+                                    type="text"
+                                    placeholder="Property type"
+                                    name="properyType"
+                                    value={this.state.properyType || ""}
+                                    onChange={this.handleInputChange}
+                                  />
+                                </div>
+                                <div className="input-group list-property-content-input-group">
+                                  <input
+                                    className="list-property-content-input-text-box form-control"
+                                    type="number"
+                                    placeholder="Accomodates"
+                                    name="accommodates"
+                                    value={this.state.accommodates || ""}
+                                    onChange={this.handleInputChange}
+                                  />
+                                </div>
+                                <div className="input-group list-property-content-input-group">
+                                  <input
+                                    className="list-property-content-input-text-box form-control"
+                                    type="number"
+                                    placeholder="Bedrooms"
+                                    name="bedrooms"
+                                    value={this.state.bedrooms || ""}
+                                    onChange={this.handleInputChange}
+                                  />
+                                </div>
+                                <div className="input-group list-property-content-input-group">
+                                  <input
+                                    className="list-property-content-input-text-box form-control"
+                                    type="number"
+                                    placeholder="Bathrooms"
+                                    name="bathrooms"
+                                    value={this.state.bathrooms || ""}
+                                    onChange={this.handleInputChange}
+                                  />
+                                </div>
+                                <div className="input-group list-property-content-input-group">
+                                  <input
+                                    className="list-property-content-input-text-box form-control"
+                                    type="text"
+                                    placeholder="Amenities"
+                                    name="amenities"
+                                    value={this.state.amenities || ""}
+                                    onChange={this.handleInputChange}
+                                  />
+                                </div>
+                                <div className="input-group list-property-content-input-group">
+                                  <input
+                                    className="list-property-content-input-text-box form-control"
+                                    type="number"
+                                    placeholder="Area (sq. fts.)"
+                                    name="area"
+                                    value={this.state.area || ""}
+                                    onChange={this.handleInputChange}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            <hr />
+                          </div>
+                          <div className="list-property-content-contianer-footer">
+                            <div class="row">
+                              <div class="col-6">
+                                <button
+                                  class="btn btn-default list-property-content-contianer-footer-button"
+                                  label="Back"
+                                >
+                                  <span class="list-property-content-contianer-footer-button-text">
+                                    Back
+                                  </span>
+                                </button>
+                              </div>
+                              <div class="col-6">
+                                <button
+                                  class="btn btn-default list-property-content-contianer-footer-button"
+                                  label="Next"
+                                >
+                                  <span class="list-property-content-contianer-footer-button-text">
+                                    Next
+                                  </span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Photos Block */}
+                    <div
+                      class="tab-pane fade"
+                      id="v-pills-photos"
+                      role="tabpanel"
+                    >
+                      <div className="list-property-content-contianer">
+                        <div className="list-property-content-contianer-wrapper">
+                          <div class="list-property-content-contianer-header">
+                            <h3>
+                              <span className="list-property-content-container-header-title">
+                                <strong>
+                                  Add up to 5 photos of your property
+                                </strong>
+                              </span>
+                            </h3>
+                            <hr />
+                          </div>
+                          <div className="list-property-content-contianer-body">
+                            <div>
+                              <div class="list-property-content-contianer-body-title-description-photo">
+                                <span>
+                                  Showcase your property’s best features (no
+                                  pets or people, please). Requirements: JPEG,
+                                  at least 1920 x 1080 pixels, less than 20MB
+                                  file size, 6 photos minimum. Need photos? Hire
+                                  a professional.
+                                </span>
+                              </div>
+                              <div class="drop-zone-border">
+                                <div className="input-group list-property-content-input-group">
+                                  <input
+                                    className="list-property-content-input-text-box-photo form-control"
+                                    type="file"
+                                    name="propertyImages"
+                                    multiple
+                                    onChange={this.handleFileUpload}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            <hr />
+                          </div>
+                          <div className="list-property-content-contianer-footer">
+                            <div class="row">
+                              <div class="col-6">
+                                <button
+                                  class="btn btn-default list-property-content-contianer-footer-button"
+                                  label="Back"
+                                >
+                                  <span class="list-property-content-contianer-footer-button-text">
+                                    Back
+                                  </span>
+                                </button>
+                              </div>
+                              <div class="col-6">
+                                <button
+                                  class="btn btn-default list-property-content-contianer-footer-button"
+                                  label="Next"
+                                >
+                                  <span class="list-property-content-contianer-footer-button-text">
+                                    Next
+                                  </span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Availability Block */}
+                    <div
+                      class="tab-pane fade"
+                      id="v-pills-availability"
+                      role="tabpanel"
+                    >
+                      <div className="list-property-content-contianer">
+                        <div className="list-property-content-contianer-wrapper">
+                          <div class="list-property-content-contianer-header">
+                            <h3>
+                              <span className="list-property-content-container-header-title">
+                                <strong>How much do you want to charge?</strong>
+                              </span>
+                            </h3>
+                            <hr />
+                          </div>
+                          <div className="list-property-content-contianer-body">
+                            <div>
+                              <div class="list-property-content-contianer-body-title-description">
+                                <span>
+                                  Select a start data and end date for renting
+                                  out the property.
+                                </span>
+                              </div>
+                              <div>
+                                <div className="input-group list-property-content-input-group">
+                                  <input
+                                    className="list-property-content-input-text-box form-control"
+                                    type="text"
+                                    placeholder="Start Date (MM/DD/YYYY)"
+                                    name="availableStartDate"
+                                    value={this.state.availableStartDate || ""}
+                                    onChange={this.handleInputChange}
+                                  />
+                                </div>
+                                <div className="input-group list-property-content-input-group">
+                                  <input
+                                    className="list-property-content-input-text-box form-control"
+                                    type="text"
+                                    placeholder="End Date (MM/DD/YYYY)"
+                                    name="availableEndDate"
+                                    value={this.state.availableEndDate || ""}
+                                    onChange={this.handleInputChange}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            <hr />
+                          </div>
+                          <div className="list-property-content-contianer-footer">
+                            <div class="row">
+                              <div class="col-6">
+                                <button
+                                  class="btn btn-default list-property-content-contianer-footer-button"
+                                  label="Back"
+                                >
+                                  <span class="list-property-content-contianer-footer-button-text">
+                                    Back
+                                  </span>
+                                </button>
+                              </div>
+                              <div class="col-6">
+                                <button
+                                  class="btn btn-default list-property-content-contianer-footer-button"
+                                  label="Next"
+                                >
+                                  <span class="list-property-content-contianer-footer-button-text">
+                                    Next
+                                  </span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Pricing Block */}
+                    <div
+                      class="tab-pane fade"
+                      id="v-pills-pricing"
+                      role="tabpanel"
+                    >
+                      <div className="list-property-content-contianer">
+                        <div className="list-property-content-contianer-wrapper">
+                          <div class="list-property-content-contianer-header">
+                            <h3>
+                              <span className="list-property-content-container-header-title">
+                                <strong>How much do you want to charge?</strong>
+                              </span>
+                            </h3>
+                            <hr />
+                          </div>
+                          <div className="list-property-content-contianer-body">
+                            <div>
+                              <div class="list-property-content-contianer-body-title-description">
+                                <span>
+                                  We recommend starting with a low price to get
+                                  a few bookings and earn some initial guest
+                                  reviews. You can update your rates at any
+                                  time.
+                                </span>
+                              </div>
+                              <div>
+                                <div className="input-group list-property-content-input-group">
+                                  <input
+                                    className="list-property-content-input-text-box form-control"
+                                    type="text"
+                                    placeholder="Currency"
+                                    name="pricingCurrency"
+                                    value={this.state.pricingCurrency || ""}
+                                    onChange={this.handleInputChange}
+                                  />
+                                </div>
+                                <div className="input-group list-property-content-input-group">
+                                  <input
+                                    className="list-property-content-input-text-box form-control"
+                                    type="number"
+                                    placeholder="Nightly Base Rate"
+                                    name="nightlyBaseRates"
+                                    value={this.state.nightlyBaseRates || ""}
+                                    onChange={this.handleInputChange}
+                                  />
+                                </div>
+                                <div className="input-group list-property-content-input-group">
+                                  <input
+                                    className="list-property-content-input-text-box form-control"
+                                    type="number"
+                                    placeholder="Minimum Stay"
+                                    name="minimumStayingNights"
+                                    value={
+                                      this.state.minimumStayingNights || ""
+                                    }
+                                    onChange={this.handleInputChange}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            <hr />
+                          </div>
+                          <div className="list-property-content-contianer-footer">
+                            <div class="row">
+                              <div class="col-6">
+                                <button
+                                  class="btn btn-default list-property-content-contianer-footer-button"
+                                  label="Back"
+                                >
+                                  <span class="list-property-content-contianer-footer-button-text">
+                                    Back
+                                  </span>
+                                </button>
+                              </div>
+                              <div class="col-6">
+                                <button
+                                  onClick={this.handleSubmit}
+                                  class="btn btn-default list-property-content-contianer-footer-button"
+                                  label="Next"
+                                >
+                                  <span class="list-property-content-contianer-footer-button-text">
+                                    Submit
+                                  </span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+  }
+}
+
+export default RegisterCharity;
+// const mapStateToProps = state => {
+//   console.log("Inside list property map state to props: ", state);
+
+//   return {
+//     data: state.reducer.data,
+//     listed: state.reducer.listed
+//   };
+// };
+
+// const mapDispatchStateToProps = dispatch => {
+//   console.log("Inside list property map dispatch to props");
+//   return {
+//     listProperty: data => {
+//       axios.post("http://localhost:5000/listproperty", data).then(response => {
+//         console.log(response.data);
+//         window.alert("Property posted successfully");
+//         dispatch({
+//           type: "LIST_PROPERTY",
+//           payload: response.data
+//         });
+//       });
+
+//       console.log("List property Action dispatched");
+//     }
+//   };
+// };
+
+// export default connect(
+//   mapStateToProps,
+//   mapDispatchStateToProps
+// )(PropertyNewRedux);
+
+
+
+

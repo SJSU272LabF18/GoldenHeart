@@ -1,0 +1,22 @@
+.navbar-color {
+  background-color: transparent;
+  background: transparent;
+  border-color: transparent;
+}
+
+.margin {
+  margin-top: 1%;
+}
+
+.flagcrop {
+  margin-top: 10px;
+  width: 30px;
+  height: 20px;
+}
+
+.housecrop {
+  width: 65px;
+  height: 54px;
+  margin-top: -12px;
+  margin-left: 14px;
+}

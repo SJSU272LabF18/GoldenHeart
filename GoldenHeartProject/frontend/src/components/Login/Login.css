@@ -1,0 +1,143 @@
+.menu {
+    width: 25%;
+    margin-top: 100px;
+    height: auto;
+    /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
+    float: left;
+    margin-top: 54px;
+  }
+  
+  .menu a {
+    display: block;
+    margin-top: 20px;
+    color: black;
+    padding: 15px;
+  }
+  
+  .menu a:hover {
+    color: black;
+    background: yellow;
+  }
+  
+  .mainformnew {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin-top: 8%;
+    height: auto;
+    position: relative;
+    padding: 14px;
+    width: 30%;
+    /* float: right; */
+    margin-left: 35%;
+    background: white;
+  }
+  
+  .welcometext {
+    margin-top: 5%;
+    margin-left: 5%;
+  }
+  .textleft {
+    margin-left: 40px;
+    margin-top: 30px;
+  }
+  
+  .textalign {
+    margin-left: -520px;
+  }
+  
+  .box-widthnew {
+    width: 90%;
+  }
+  
+  .shadow {
+    box-shadow: 5px 11px 20px 10px #000000;
+  }
+  
+  .prev-next {
+    padding: 0px 0px 0px 50px;
+  }
+  
+  .left-previous {
+    margin-left: -500px;
+  }
+  
+  .phototext {
+    padding-top: 10%;
+  }
+  
+  .toptextmargin {
+    margin-top: 15%;
+  }
+  
+  .menu a {
+    color: white;
+    text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
+  }
+  
+  .sidebar {
+    height: 100%;
+    width: 160px;
+  
+    /* z-index: 1; */
+    /* background: white; */
+    padding: 4%;
+  
+    /* overflow-x: hidden; */
+    padding-top: 16px;
+    margin-top: 8%;
+    margin-left: 5%;
+    width: 20%;
+  
+    float: left;
+    /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
+  }
+  
+  /* Style sidebar links */
+  .sidebar a {
+    margin-top: 1%;
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 20px;
+    color: black;
+    display: block;
+  }
+  
+  /* Style links on mouse-over */
+  .sidebar a:hover {
+    color: rgb(83, 5, 5);
+    text-decoration: none;
+    text-shadow: 1px 1px 2px rgb(255, 255, 255), 0 0 25px rgb(250, 250, 250),
+      0 0 5px darkblue;
+  }
+  
+  /* Style the main content */
+  .main {
+    margin-left: 160px; /* Same as the width of the sidenav */
+    padding: 0px 10px;
+  }
+  
+  .lateststyle {
+    position: absolute;
+    width: 100%;
+    height: 120%;
+    background: #f8f9fa;
+    margin-left: 12%;
+    margin-top: 2%;
+  }
+  
+  .m-5 {
+    margin: 1rem !important;
+  }
+  
+  .fa-angle-right {
+    color: rgb(49, 49, 49);
+    text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
+  
+    /* text-shadow: 2px 2px 5px rgb(255, 255, 255);
+    color: rgb(60, 60, 117); */
+  }
+  
+  .loginbutton{
+
+    width: 40%;
+
+  }
