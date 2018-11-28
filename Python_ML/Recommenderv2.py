@@ -83,7 +83,7 @@ class Recommender:
     def getCategoryID(self,age,gender,lat,lon):
 
         #loaded_model = pickle.load(open('knn_model_final.sav', 'rb'))        
-        zone = self.calc_zone(lat,lon)
+        zone = self.calc_zone(float(lat),float(lon))
         #print("zone is ----------------")
         #print(zone)
         list1=[]

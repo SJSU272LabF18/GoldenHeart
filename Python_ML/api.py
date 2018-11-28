@@ -1,6 +1,6 @@
 from flask import Flask, request
 from flask_restful import Resource, Api
-from Recommender import Recommender
+from Recommenderv2 import Recommender
 
 app = Flask(__name__)
 api = Api(app)
