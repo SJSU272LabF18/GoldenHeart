@@ -1,0 +1,6 @@
+flask_restful
+flask
+requests
+pymongo
+pandas
+sklearn
