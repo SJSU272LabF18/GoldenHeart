@@ -2,6 +2,7 @@
 
 const User = require('../models/user.model')
 const Charity = require('../models/charity.model')
+const Buisness = require('../models/buisness.model')
 const jwt = require('jsonwebtoken')
 const config = require('../config')
 const httpStatus = require('http-status')
@@ -26,6 +27,19 @@ exports.registerCharity = async (req, res, next) => {
     const savedCharity = await charity.save()
     res.status(httpStatus.CREATED)
     res.send({savedUser, savedCharity})
+  } catch (error) {
+    return next(User.checkDuplicateEmailError(error))
+  }
+}
+exports.registerBuisness = async (req, res, next) => {
+  try {
+    const user = new User(req.body)
+    const savedUser = await user.save()
+    req.body.id = savedUser._id
+    const buisness = new Buisness(req.body)
+    const savedBuisness = await buisness.save()
+    res.status(httpStatus.CREATED)
+    res.send({savedUser, savedBuisness})
   } catch (error) {
     return next(User.checkDuplicateEmailError(error))
   }
