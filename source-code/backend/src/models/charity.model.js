@@ -4,65 +4,78 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const charitySchema = new Schema({
-  id: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
+  charity_id: {
+    type: Number,
     required: true,
     index: true
   },
-  name: {
-    type: String
+  charity_name: {
+    type: String,
+    required: true
   },
-  street: {
-    type: String
+  charity_mission: {
+    type: String,
+    required: true
+  },
+  charity_url: {
+    type: String,
+    required: true
+  },
+  category_id: {
+    type: Number,
+    required: true
+  },
+  category_name: {
+    type: String,
+    required: true
+  },
+  sub_category: {
+    type: String,
+    required: true
+  },
+  work_type: {
+    type: String,
+    required: true
   },
   city: {
-    type: String
+    type: String,
+    required: true
   },
-  country: {
-    type: String
+  state: {
+    type: String,
+    required: true
   },
-  zipcode: {
-    type: Number
+  latitude: {
+    type: Number,
+    required: true
   },
-  coordinates: {
-    type: [Number]
+  longitude: {
+    type: Number,
+    required: true
   },
-  headline: {
-    type: String
+  minage: {
+    type: Number,
+    default: 17
   },
-  description: {
-    type: String
+  maxage: {
+    type: Number,
+    default: 100
   },
-  operationAreas: {
-    type: String
+  total_contributions: {
+    type: Number,
+    required: true
   },
-  goal: {
-    type: String
+  accountability_score: {
+    type: Number,
+    default: Math.round(Math.random() * 100)
   },
-  motivation: {
-    type: String
+  financial_score: {
+    type: Number,
+    default: Math.round(Math.random() * 100)
   },
-  type: {
-    type: String
-  },
-  registrationNumber: {
-    type: String
-  },
-  taxExemptNumber: {
-    type: String
-  },
-  fiveOOne: {
-    type: String
-  },
-  audited: {
-    type: String
-  },
-  website: {
-    type: String
-  },
-  displayPicture: {
-    type: String
+  overall_score: {
+    type: Number,
+    default: Math.round(((Math.random() * 100) % 15) + 85) % 100
   }
 }, {
   timestamps: true
@@ -71,7 +84,7 @@ const charitySchema = new Schema({
 charitySchema.method({
   transform () {
     const transformed = {}
-    const fields = ['id', 'name', 'street', 'city', 'country', 'coordinates', 'headline', 'description', 'operationAreas', 'goal', 'motivation', 'type', 'registrationNumber', 'taxExemptNumber', 'fiveOOne', 'audited', 'website', 'displayPicture']
+    const fields = ['charity_id', 'charity_name', 'charity_mission', 'charity_url', 'category_name', 'sub_category', 'work_type', 'city', 'state', 'latitude', 'longitude', 'minage', 'maxage', 'total_contributions']
     fields.forEach((field) => {
       transformed[field] = this[field]
     })

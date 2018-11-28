@@ -15,44 +15,9 @@ const buisnessSchema = new Schema({
     maxlength: 50,
     required: true
   },
-  street: {
-    type: String
-  },
-  city: {
-    type: String
-  },
-  country: {
-    type: String
-  },
-  zipcode: {
-    type: Number
-  },
-  headline: {
-    type: String,
-    maxlength: 50,
-    required: true
-  },
-  description: {
-    type: String,
-    required: true
-  },
-  type: {
-    type: String,
-    maxlength: 50,
-    required: true
-  },
-  fedralId: {
-    type: String,
-    maxlength: 50,
-    required: true
-  },
   website: {
     type: String,
-    maxlength: 100,
     required: true
-  },
-  displayPicture: {
-    type: String
   }
 }, {
   timestamps: true
@@ -61,7 +26,7 @@ const buisnessSchema = new Schema({
 buisnessSchema.method({
   transform () {
     const transformed = {}
-    const fields = ['id', 'name', 'street', 'city', 'country', 'zipcode', 'coordinates', 'headline', 'description', 'type', 'fedralId', 'website', 'displayPicture']
+    const fields = ['id', 'name', 'website']
     fields.forEach((field) => {
       transformed[field] = this[field]
     })
