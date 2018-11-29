@@ -1628,7 +1628,6 @@ div#preloader {
 .contact-area {
   height: auto;
   width: 100%;
-  background-color: #f9f9f9;
 }
 
 .contact-content {
@@ -1743,6 +1742,7 @@ div#preloader {
 
 .footer-area {
   padding: 40px 0;
+  background-color: #f9f9f9;
 }
 
 .footer-head p {
