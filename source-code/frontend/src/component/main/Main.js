@@ -1,18 +1,33 @@
 import React, { Component } from 'react'
 import CharityDashboard from './../dashboard/CharityDashboard'
-import ApiDocumentation from './../api/ApiDocumentation'
+import BuisnessDashboard from './../dashboard/BuisnessDashboard'
+
+// import ApiDocumentation from './../api/ApiDocumentation'
+import Login from './../login/login'
+import RegisterBuisness from './../register/RegisterBuisness'
+import RegisterCharity from './../register/RegisterCharity'
 import { Switch, Route, Redirect } from 'react-router-dom'
 export default class Main extends Component {
   render() {
     return (
       <div>
+        <Switch>
+        <Route exact path="/" component={Login} />
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/register-buisness" component={RegisterBuisness} />
+        <Route exact path="/register-charity" component={RegisterCharity} />
+        <Route exact path="/dashboard-charity" component={CharityDashboard} />
+        <Route exact path="/dashboard-buisness" component={BuisnessDashboard} />
+        </Switch>
         {/* <CharityDashboard></CharityDashboard> */}
         {/* <ApiDocumentation></ApiDocumentation> */}
-        <Switch>
+
+          {/* <Login></Login> */}
+        {/* <Switch> */}
           {/* <Route exact path="/" component={Home} />   */}
           {/* <CharityPrivateRoute path="/Charity/dashboard" component={DashboardCharity} /> */}
           {/* <BuisnessPrivateRoute path="/Buisness/search" component={Search} /> */}
-        </Switch>
+        {/* </Switch> */}
 
       </div>
       )

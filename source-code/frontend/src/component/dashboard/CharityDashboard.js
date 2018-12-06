@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Authentication } from "./../../service/Authentication";
 const LineChart = require("react-chartjs").Line;
 
 
@@ -12,6 +13,7 @@ export default class CharityDashboard extends Component {
         const data1 = [52, 60, 55, 50, 65, 80, 57, 70, 95, 50]
         
         this.state = {
+            name: Authentication.email,
             data: {
               labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', ''],
               datasets: [
@@ -79,18 +81,13 @@ export default class CharityDashboard extends Component {
     
     }
   render() {
-       // Recent Report
-//        try {
-           
-   
-
 
     return (
-<div class="page-wrapper">
+    <div class="page-wrapper">
         <aside class="menu-sidebar d-none d-lg-block">
             <div class="logo">
                 <a href="#">
-                    <img src="images/icon/logo.png" alt="Cool Admin" />
+                    <img src="images/icon/logo.png" alt="GoldenHeart" />
                 </a>
             </div>
             <div class="menu-sidebar__content js-scrollbar1">
@@ -100,16 +97,9 @@ export default class CharityDashboard extends Component {
                             <a class="js-arrow" href="#">
                                 <i class="fas fa-tachometer-alt"></i>DASHBOARD</a>
                         </li>
+                    
                         <li>
-                            <a href="chart.html">
-                                <i class="fas fa-chart-bar"></i>API</a>
-                        </li>
-                        <li>
-                            <a href="table.html">
-                                <i class="fas fa-table"></i>EMBED CODE</a>
-                        </li>
-                        <li>
-                            <a href="form.html">
+                            <a href="/dashboard-charity">
                                 <i class="far fa-check-square"></i>SETTINGS</a>
                         </li>
                     </ul>
@@ -135,10 +125,10 @@ export default class CharityDashboard extends Component {
                                 <div class="account-wrap">
                                     <div class="account-item clearfix js-item-menu">
                                         <div class="image">
-                                            <img src="images/icon/avatar-01.jpg" alt="John Doe" />
+                                            <img src="images/icon/avatar-01.jpg" alt="Saket Thakare" />
                                         </div>
                                         <div class="content">
-                                            <a class="js-acc-btn" href="#">Saket Thakare</a>
+                                            <a class="js-acc-btn" href="#">{this.state.name}</a>
                                         </div>
                                         <div class="account-dropdown js-dropdown">
                                             <div class="info clearfix">
@@ -199,12 +189,12 @@ export default class CharityDashboard extends Component {
                                                 <div class="chart-statis">
                                                     <span class="index incre">
                                                         <i class="zmdi zmdi-long-arrow-up"></i>25%</span>
-                                                    <span class="label">products</span>
+                                                    <span class="label">Views</span>
                                                 </div>
                                                 <div class="chart-statis mr-0">
                                                     <span class="index decre">
                                                         <i class="zmdi zmdi-long-arrow-down"></i>10%</span>
-                                                    <span class="label">services</span>
+                                                    <span class="label">Donations</span>
                                                 </div>
                                             </div>
                                         </div>
