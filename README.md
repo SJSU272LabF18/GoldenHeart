@@ -4,8 +4,8 @@
 
 - [Ajinkya Thakare](https://www.linkedin.com/in/aj1thakare)
 - [Arman Pathan](https://www.linkedin.com/in/arman-pathan-216b49156)
-- [Sarthak Singhal] (https://www.linkedin.com/in/sarthak-singhal)
-- [Saket Thakare] (https://www.linkedin.com/in/saket-thakare)
+- [Sarthak Singhal](https://www.linkedin.com/in/sarthak-singhal)
+- [Saket Thakare](https://www.linkedin.com/in/saket-thakare)
 
 ## GoldenHeart
 
