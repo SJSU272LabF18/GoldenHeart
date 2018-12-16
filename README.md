@@ -18,7 +18,7 @@ Project Description: GoldenHeart aims to bring together businesses and charities
 
 ![Dashboard](./Resource/Dashboard-charity.png)
 
-### API in action [Documentation](https://documenter.getpostman.com/view/5370154/Rzfdqqjn)
+### API in action. [View Documentation](https://documenter.getpostman.com/view/5370154/Rzfdqqjn)
 
 ![APIinAction](./Resource/API-Inaction.png)
 
